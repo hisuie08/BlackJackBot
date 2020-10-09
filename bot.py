@@ -6,19 +6,11 @@ from discord.ext import commands
 import game
 from game import *
 import pathlib
+from functools import wraps
 
-PATH = pathlib.Path()
-HOMEPATH = PATH.cwd()
+path = pathlib.Path()
 
-PLAYERDIR = HOMEPATH / "players"
+TOKEN_FILE = path.cwd() / "token.txt"
 
-BlackJackBot = commands.Bot("!")
-
-
-@BlackJackBot.command()
-async def register(ctx):
-    userid = ctx.author.id
-    player = Player(userid)
-    pass
-
-BlackJackBot.run()
+with open(TOKEN_FILE, "r") as t:
+    token = t.read()

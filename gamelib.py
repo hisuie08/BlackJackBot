@@ -96,19 +96,22 @@ class Trump:
 
 class Player():
     def __init__(self, userid: int):
-        pdataformat = {
+        self.pdataformat = dict({
             "chip": 500,
             "game_total": 0,
             "game_win": 0
-        }
+        })
         self.userid = userid
-        playerdata = PLAYERDIR / f"{userid}.json"
-        if not playerdata.exists():
-            with open(playerdata, "w") as w:
-                json.dump(pdataformat, w, ensure_ascii=False)
-        with open(playerdata) as r:
-            self.chip = int(r.read())
-        self.cards = []
+        self.playerdata = PLAYERDIR / f"{userid}.json"
+        self.on_game = False
+
+    def status_update(self, key, value):
+        return
+
+    def load_data(self):
+        p = json.load(playerdata)
+        result = dict(p)
+        return result
 
     def calc_hand(self):
         result = 0
@@ -116,6 +119,14 @@ class Player():
             c = Card(c)
             result += c.num
         return result
+
+    def register(self) -> bool:
+        if not self.playerdata.exists():
+            with open(self.playerdata, "w") as w:
+                json.dump(self.pdataformat, w)
+            return True
+        else:
+            return False
 
 
 class Dealer(Player):
