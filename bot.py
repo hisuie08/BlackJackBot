@@ -2,27 +2,23 @@ import sys
 import discord
 import time
 import datetime
-import os
+from discord.ext import commands
 import game
 from game import *
+import pathlib
 
-PATH = os.path.dirname(os.path.abspath(__file__))
-with open(PATH + "/token.txt") as t:
-    token = t.read()
+PATH = pathlib.Path()
+HOMEPATH = PATH.cwd()
 
+PLAYERDIR = HOMEPATH / "players"
 
-class BlackJackBot(discord.Client):
-    async def on_ready(self):
-        pass
-
-    async def on_message(self, message):
-        if message.author == self.user:
-            pass
-        if message.content == "!bjstart":
-            g = Game(message.author.id)
-            g.start()
+BlackJackBot = commands.Bot("!")
 
 
-bot = BlackJackBot()
+@BlackJackBot.command()
+async def register(ctx):
+    userid = ctx.author.id
+    player = Player(userid)
+    pass
 
-bot.run(token)
+BlackJackBot.run()
