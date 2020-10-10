@@ -65,7 +65,7 @@ DECK = [("JOKER", "JOKER", "<:JOKER:763965286519930911>"),
 
 class Card():
     def __init__(self, card):
-        card = tuple(card)
+        card = card
         self.symbol = str(card[0])
         num = card[1]
         if num == "A":
@@ -76,7 +76,7 @@ class Card():
             self.num = 0
         else:
             self.num = int(num)
-        self.emoji = str(card[3])
+        self.emoji = str(card[2])
 
 
 class Trump:
@@ -103,25 +103,35 @@ class Player():
         })
         self.userid = userid
         self.playerdata = PLAYERDIR / f"{userid}.json"
+        self.registered = bool(self.playerdata.exists())
         self.on_game = False
+        self.hands = []
 
-    def status_update(self, key, value):
-        return
-
-    def load_data(self):
-        p = json.load(playerdata)
-        result = dict(p)
-        return result
-
-    def calc_hand(self):
+    def calc_sum(self):
         result = 0
-        for c in self.cards:
-            c = Card(c)
+        for c in self.hands:
             result += c.num
         return result
 
+    def read_data(self):
+        with open(self.playerdata, "r") as r:
+            data = json.load(r)
+            result = dict(data)
+            return result
+
+    def status_update(self, key, value):
+        data = self.read_data()
+        data[key] = value
+        self.write_data(data)
+        return
+
+    def write_data(self, data):
+        with open(self.playerdata, "w") as w:
+            json.dump(data, w)
+            return
+
     def register(self) -> bool:
-        if not self.playerdata.exists():
+        if not self.registered:
             with open(self.playerdata, "w") as w:
                 json.dump(self.pdataformat, w)
             return True
